@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Hello, elasticsearch!</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>body { font: 100% normal 'Helvetica Neue', sans-serif; margin: 4em; }</style>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script> 
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="/resources/demos/style.css"> 
+</head>
+<body>
+  <p>
+    &quot;Hello, <span id="cluster_name">elasticsearch</span>!&quot;,
+    says <strong id="node_name">node</strong>,
+    running on <em id="host_name">localhost</em>.
+  </p>
+  <h3>David Crespo</h3>
+  <img src="fatimaAndMe.jpg" alt="Fatima and Me">
+  <div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+  <form id="myForm" action="comment.php" method="post"> 
+    Name: <input type="text" name="name" /> 
+    Comment: <textarea name="comment"></textarea> 
+    <input type="submit" value="Submit Comment" /> 
+</form>
+
+
+  <script>
+  $(function() {
+    $( "#dialog" ).dialog();
+  });
+  $(function() {
+    $.getJSON('http://localhost:9200/_cluster/nodes/_local', function(data) {
+      console.log(data);
+
+      var node_id = Object.keys(data.nodes)[0]
+        , cluster_name = data['cluster_name']
+        , node_name    = data.nodes[node_id]['name']
+        , host_name    = data.nodes[node_id]['hostname'];
+
+      $('#cluster_name').html( cluster_name);
+      $('#node_name').html(    node_name   );
+      $('#host_name').html(    host_name   );
+    })
+  });
+
+  // wait for the DOM to be loaded 
+        $(document).ready(function() { 
+            // bind 'myForm' and provide a simple callback function 
+            $('#myForm').ajaxForm(function() { 
+                alert("Thank you for your comment!"); 
+            }); 
+        }); 
+  </script>
+  
+</body>
+</html>
